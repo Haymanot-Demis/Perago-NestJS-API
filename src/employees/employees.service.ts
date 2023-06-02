@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from './entities/employee.entity';
 import { DataSource, DeleteResult, InsertResult, Repository } from 'typeorm';
 import { CreateEmployeeDTO } from './dto/create-employee.dto';
+import { updateEmployeeDTO } from './dto/update-employee.dto';
 
 @Injectable()
 export class EmployeesService {
@@ -27,11 +28,11 @@ export class EmployeesService {
   async findEmployee(id: string): Promise<Employee> {
     return this.employeeRepository.findOne({
       where: { id },
-      relations: ['parent', 'children'],
+      relations: ['parent', 'children', 'photos'],
     });
   }
 
-  async addEmployee(employee: Employee): Promise<Employee> {
+  async addEmployee(employee: CreateEmployeeDTO): Promise<Employee> {
     const result = await this.employeeRepository
       .createQueryBuilder()
       .insert()
@@ -44,7 +45,7 @@ export class EmployeesService {
 
   async updateEmployee(
     id: string,
-    employee: CreateEmployeeDTO,
+    employee: updateEmployeeDTO,
   ): Promise<Employee> {
     console.log(id, employee);
     const updateRes = await this.employeeRepository
@@ -67,14 +68,12 @@ export class EmployeesService {
       .execute();
   }
 
-  removeEmployee(id: string): Promise<Employee> {
-    this.employeeRepository
+  removeEmployee(id: string): Promise<DeleteResult> {
+    return this.employeeRepository
       .createQueryBuilder()
       .delete()
       .from(Employee, 'employee')
       .where('employee.id = :id', { id })
       .execute();
-
-    return this.findEmployee(id);
   }
 }

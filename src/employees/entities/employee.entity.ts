@@ -5,6 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Photo } from './photo.entity';
 
 @Entity()
 export class Employee {
@@ -26,10 +27,15 @@ export class Employee {
   @OneToMany(() => Employee, (employee) => employee.parent, {
     cascade: true,
   })
-  children: string[];
+  children: Employee[];
 
   @ManyToOne(() => Employee, (employee) => employee.children, {
     onDelete: 'SET NULL',
   })
   parent: Employee;
+
+  @OneToMany(() => Photo, (photo) => photo.employee, {
+    onDelete: 'CASCADE',
+  })
+  photos: Photo[];
 }
