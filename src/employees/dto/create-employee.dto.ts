@@ -6,10 +6,12 @@ import {
   IsString,
   IsNumberString,
   IsInt,
+  IsOptional,
 } from 'class-validator';
 import { Employee } from '../entities/employee.entity';
 import { calculateObjectSize } from 'typeorm/driver/mongodb/bson.typings';
 import * as Joi from 'joi';
+import { Photo } from 'src/photos/entities/photo.entity';
 
 export class CreateEmployeeDTO {
   @IsNotEmpty()
@@ -28,6 +30,12 @@ export class CreateEmployeeDTO {
 
   @IsNotEmpty()
   position: string;
+
+  level: number;
+
+  parentId: string;
+
+  photos: Photo[];
 }
 
 export const createEmployeeJoiSchema = Joi.object({
@@ -35,5 +43,6 @@ export const createEmployeeJoiSchema = Joi.object({
   lastname: Joi.string().min(3).max(20).required(),
   email: Joi.string().email().required(),
   position: Joi.string().required(),
-  parent: Joi.string(),
+  // parent: Joi.string(),
+  level: Joi.number(),
 });

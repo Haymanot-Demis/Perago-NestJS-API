@@ -9,6 +9,8 @@ import {
   Query,
   ParseIntPipe,
   UsePipes,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 
 import { EmployeesService } from './employees.service';
@@ -20,12 +22,29 @@ import { Employee } from './entities/employee.entity';
 import { DeleteResult, InsertResult } from 'typeorm';
 import { updateEmployeeDTO } from './dto/update-employee.dto';
 import { JoiValidationPipe } from './employee-joi-validation.pipe';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { PhotosService } from 'src/photos/photos.service';
+import { CreatePhotoDto } from 'src/photos/dto/create-photo.dto';
+
+const storage = diskStorage({
+  destination: './uploads/profiles',
+  filename: (req, file, cb) => {
+    const filename: string = file.originalname;
+    const splited = filename.split('.');
+    const extention: string = splited[splited.length - 1];
+    cb(null, `${Date.now()}.${extention}`);
+  },
+});
 
 @Controller('employees')
 export class EmployeesController {
-  constructor(private readonly employeesService: EmployeesService) {}
+  constructor(
+    private readonly employeesService: EmployeesService,
+    private readonly photosService: PhotosService,
+  ) {}
   @Get()
-  findAllEmployees(): Promise<Employee[]> {
+  findAllEmployees(): Promise<any[]> {
     return this.employeesService.findAllEmployees();
   }
 
@@ -41,12 +60,26 @@ export class EmployeesController {
   }
 
   @Post()
+  @UseInterceptors(
+    FileInterceptor('photo', { storage, limits: { fileSize: 5120000 } }),
+  )
   // @UsePipes(new JoiValidationPipe(createEmployeeJoiSchema))
+  // @Body(new JoiValidationPipe(createEmployeeJoiSchema))
   async addEmployee(
     @Body(new JoiValidationPipe(createEmployeeJoiSchema))
     employee: CreateEmployeeDTO,
+    @UploadedFile() photo: Express.Multer.File,
   ): Promise<Employee> {
-    return this.employeesService.addEmployee(employee);
+    // console.log('e', employee);
+    // console.log('f', photo);
+    const emp = await this.employeesService.addEmployee(employee);
+    if (photo) {
+      const photoInsertRes = await this.photosService.create({
+        URI: photo.path,
+        employee: emp,
+      });
+    }
+    return this.employeesService.findEmployee(emp.id);
   }
 
   @Put(':id')

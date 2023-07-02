@@ -1,10 +1,10 @@
 import { IsFQDN } from 'class-validator';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Employee } from './employee.entity';
+import { Employee } from '../../employees/entities/employee.entity';
 
 @Entity()
 export class Photo {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column()

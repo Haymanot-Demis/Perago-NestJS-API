@@ -12,8 +12,8 @@ export class JoiValidationPipe implements PipeTransform {
   transform(Inputvalue: any, metadata: ArgumentMetadata) {
     const { error, value } = this.objectSchema.validate(Inputvalue, {
       abortEarly: true,
+      allowUnknown: true,
     });
-    console.log(value);
 
     if (error) {
       throw new BadRequestException('validation failed' + error.message);

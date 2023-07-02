@@ -4,10 +4,18 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Tree,
+  TreeChildren,
+  TreeLevelColumn,
+  TreeParent,
 } from 'typeorm';
-import { Photo } from './photo.entity';
+import { Photo } from '../../photos/entities/photo.entity';
 
 @Entity()
+@Tree('closure-table', {
+  ancestorColumnName: (column) => 'ancestor_id',
+  descendantColumnName: (column) => 'descendant_id',
+})
 export class Employee {
   @PrimaryGeneratedColumn()
   id: string;
@@ -24,13 +32,11 @@ export class Employee {
   @Column()
   position: string;
 
-  @OneToMany(() => Employee, (employee) => employee.parent, {
-    cascade: true,
-  })
+  @OneToMany(() => Employee, (employee) => employee.parent)
   children: Employee[];
 
   @ManyToOne(() => Employee, (employee) => employee.children, {
-    onDelete: 'SET NULL',
+    onDelete: 'NO ACTION',
   })
   parent: Employee;
 

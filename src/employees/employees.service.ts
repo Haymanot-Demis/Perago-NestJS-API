@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from './entities/employee.entity';
-import { DataSource, DeleteResult, InsertResult, Repository } from 'typeorm';
+import {
+  DataSource,
+  DeleteResult,
+  InsertResult,
+  Repository,
+  TreeRepository,
+} from 'typeorm';
 import { CreateEmployeeDTO } from './dto/create-employee.dto';
 import { updateEmployeeDTO } from './dto/update-employee.dto';
 
@@ -9,7 +15,7 @@ import { updateEmployeeDTO } from './dto/update-employee.dto';
 export class EmployeesService {
   constructor(
     @InjectRepository(Employee)
-    private employeeRepository: Repository<Employee>,
+    private employeeRepository: TreeRepository<Employee>,
   ) {}
 
   async find(employee: CreateEmployeeDTO): Promise<Employee[]> {
@@ -19,9 +25,9 @@ export class EmployeesService {
     });
   }
 
-  async findAllEmployees(): Promise<Employee[]> {
-    return this.employeeRepository.find({
-      relations: ['parent', 'children'],
+  async findAllEmployees(): Promise<any[]> {
+    return this.employeeRepository.findTrees({
+      relations: ['parent', 'children', 'photos'],
     });
   }
 
@@ -37,7 +43,7 @@ export class EmployeesService {
       .createQueryBuilder()
       .insert()
       .into(Employee)
-      .values(employee)
+      .values({ ...employee, parent })
       .execute();
 
     return this.findEmployee(result.identifiers[0].id);
