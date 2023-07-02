@@ -1,3 +1,4 @@
+import { Length } from 'class-validator';
 import {
   Column,
   Entity,
@@ -17,6 +18,7 @@ export class Role {
   id: string;
 
   @Column()
+  @Length(2)
   name: string;
 
   @Column()

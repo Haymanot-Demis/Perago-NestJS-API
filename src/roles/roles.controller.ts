@@ -3,23 +3,25 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Put,
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
+import { CreateRoleDto, createRoleJoiSchema } from './dto/create-role.dto';
+import { UpdateRoleDto, updateRoleJoiSchema } from './dto/update-role.dto';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { Role } from './entities/role.entity';
+import { RolesJoiValidationPipe } from './roles-joi-validation-schema.pipe';
 
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post()
-  async create(@Body() role: CreateRoleDto): Promise<InsertResult> {
+  async create(
+    @Body(new RolesJoiValidationPipe(createRoleJoiSchema)) role: CreateRoleDto,
+  ): Promise<InsertResult> {
     return this.rolesService.create(role);
   }
 
@@ -41,7 +43,8 @@ export class RolesController {
   @Put(':id')
   update(
     @Param('id') id: string,
-    @Body() updateRoleDto: UpdateRoleDto,
+    @Body(new RolesJoiValidationPipe(updateRoleJoiSchema))
+    updateRoleDto: UpdateRoleDto,
   ): Promise<UpdateResult> {
     return this.rolesService.update(id, updateRoleDto);
   }
