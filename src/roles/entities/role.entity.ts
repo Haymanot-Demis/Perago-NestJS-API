@@ -1,4 +1,4 @@
-import { Length } from 'class-validator';
+import { IsOptional, Length } from 'class-validator';
 import {
   Column,
   Entity,
@@ -12,7 +12,6 @@ import {
 } from 'typeorm';
 
 @Entity()
-@Tree('closure-table')
 export class Role {
   @PrimaryGeneratedColumn()
   id: string;
@@ -21,7 +20,7 @@ export class Role {
   @Length(2)
   name: string;
 
-  @Column()
+  @Column({ nullable: true, default: '' })
   description: string;
 
   @OneToMany(() => Role, (role) => role.parent)

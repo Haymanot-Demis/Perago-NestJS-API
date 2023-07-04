@@ -12,7 +12,7 @@ import { CreateRoleDto, createRoleJoiSchema } from './dto/create-role.dto';
 import { UpdateRoleDto, updateRoleJoiSchema } from './dto/update-role.dto';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { Role } from './entities/role.entity';
-import { RolesJoiValidationPipe } from './roles-joi-validation-schema.pipe';
+import { ParseRolePipe } from './parse-role.pipe';
 
 @Controller('roles')
 export class RolesController {
@@ -20,8 +20,11 @@ export class RolesController {
 
   @Post()
   async create(
-    @Body(new RolesJoiValidationPipe(createRoleJoiSchema)) role: CreateRoleDto,
+    @Body(new ParseRolePipe(createRoleJoiSchema)) role: CreateRoleDto,
   ): Promise<InsertResult> {
+    console.log('in controller');
+    console.log(role);
+
     return this.rolesService.create(role);
   }
 
@@ -43,7 +46,7 @@ export class RolesController {
   @Put(':id')
   update(
     @Param('id') id: string,
-    @Body(new RolesJoiValidationPipe(updateRoleJoiSchema))
+    @Body(new ParseRolePipe(updateRoleJoiSchema))
     updateRoleDto: UpdateRoleDto,
   ): Promise<UpdateResult> {
     return this.rolesService.update(id, updateRoleDto);

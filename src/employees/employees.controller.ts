@@ -19,7 +19,7 @@ import {
   createEmployeeJoiSchema,
 } from './dto/create-employee.dto';
 import { Employee } from './entities/employee.entity';
-import { DeleteResult, InsertResult } from 'typeorm';
+import { DeleteResult, InsertResult, TreeRepository } from 'typeorm';
 import { updateEmployeeDTO } from './dto/update-employee.dto';
 import { JoiValidationPipe } from './employee-joi-validation.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -40,8 +40,8 @@ const storage = diskStorage({
 @Controller('employees')
 export class EmployeesController {
   constructor(
-    private readonly employeesService: EmployeesService,
-    private readonly photosService: PhotosService,
+    private readonly employeesService: EmployeesService = null,
+    private readonly photosService: PhotosService = null,
   ) {}
   @Get()
   findAllEmployees(): Promise<any[]> {

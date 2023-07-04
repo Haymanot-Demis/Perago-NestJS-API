@@ -11,6 +11,10 @@ export class RolesService {
     @InjectRepository(Role) private roleRepository: Repository<Role>,
   ) {}
   async create(role: CreateRoleDto): Promise<InsertResult> {
+    this.roleRepository.create(role);
+    this.roleRepository.save(role);
+    return Promise.resolve(new InsertResult());
+
     return this.roleRepository
       .createQueryBuilder()
       .insert()
@@ -25,7 +29,7 @@ export class RolesService {
 
   async getHierarchy(id: string): Promise<Role> {
     const parent = await this.findOne(id);
-    const children = parent.children;
+    const children = parent.children ?? [];
 
     for (let i = 0; i < children.length; i++) {
       const subtree = await this.getHierarchy(children[i].id);
@@ -43,6 +47,7 @@ export class RolesService {
   }
 
   async update(id: string, updatedRole: UpdateRoleDto): Promise<UpdateResult> {
+    return this.roleRepository.update(id, updatedRole);
     return this.roleRepository
       .createQueryBuilder()
       .update(Role)
@@ -56,6 +61,12 @@ export class RolesService {
       where: { id },
       relations: ['parent', 'children'],
     });
+
+    if (!emp) {
+      return this.roleRepository.delete(id);
+    }
+    this.roleRepository.update({ parent: emp }, { parent: emp.parent });
+    return this.roleRepository.delete(id);
 
     this.roleRepository
       .createQueryBuilder()

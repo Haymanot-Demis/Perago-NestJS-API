@@ -3,17 +3,16 @@ import { Role } from '../entities/role.entity';
 import * as Joi from 'joi';
 
 export class CreateRoleDto {
+  @Length(2)
   name: string;
 
+  @Length(2)
   @IsOptional()
-  description: string;
-
-  @IsOptional()
-  parent: Role;
+  description?: string;
 }
 
 export const createRoleJoiSchema = Joi.object({
-  name: Joi.string().length(2).required(),
+  name: Joi.string().min(2).required(),
   description: Joi.string().optional(),
-  parent: Joi.string().optional(),
+  parent: Joi.optional(),
 });
