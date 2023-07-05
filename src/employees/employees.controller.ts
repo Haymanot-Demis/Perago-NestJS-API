@@ -24,8 +24,7 @@ import { updateEmployeeDTO } from './dto/update-employee.dto';
 import { JoiValidationPipe } from './employee-joi-validation.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { PhotosService } from 'src/photos/photos.service';
-import { CreatePhotoDto } from 'src/photos/dto/create-photo.dto';
+import { PhotosService } from '../photos/photos.service';
 
 const storage = diskStorage({
   destination: './uploads/profiles',

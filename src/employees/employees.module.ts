@@ -3,8 +3,7 @@ import { EmployeesController } from './employees.controller';
 import { EmployeesService } from './employees.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Employee } from './entities/employee.entity';
-import { Photo } from '../photos/entities/photo.entity';
-import { PhotosModule } from 'src/photos/photos.module';
+import { PhotosModule } from '../photos/photos.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Employee]), PhotosModule],

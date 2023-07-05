@@ -30,6 +30,8 @@ describe('RolesController', () => {
       return new UpdateResult();
     }),
     remove: jest.fn((id) => {
+      console.log('in mock service');
+
       return new DeleteResult();
     }),
   };

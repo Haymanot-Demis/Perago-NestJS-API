@@ -29,7 +29,7 @@ export class RolesService {
 
   async getHierarchy(id: string): Promise<Role> {
     const parent = await this.findOne(id);
-    const children = parent.children ?? [];
+    const children = parent?.children ?? [];
 
     for (let i = 0; i < children.length; i++) {
       const subtree = await this.getHierarchy(children[i].id);
@@ -57,6 +57,8 @@ export class RolesService {
   }
 
   async remove(id: string): Promise<DeleteResult> {
+    console.log('in service');
+
     const emp = await this.roleRepository.findOne({
       where: { id },
       relations: ['parent', 'children'],

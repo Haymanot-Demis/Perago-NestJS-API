@@ -8,7 +8,6 @@ import { EmployeesModule } from './employees/employees.module';
 import { ConfigModule } from '@nestjs/config';
 import { RolesModule } from './roles/roles.module';
 import { PhotosModule } from './photos/photos.module';
-import { Role } from './roles/entities/role.entity';
 
 @Module({
   imports: [
@@ -22,7 +21,7 @@ import { Role } from './roles/entities/role.entity';
       database: 'PERAGO HR',
       autoLoadEntities: true,
       synchronize: true,
-      logging: true,
+      // logging: true,
     }),
     EmployeesModule,
     PhotosModule,
