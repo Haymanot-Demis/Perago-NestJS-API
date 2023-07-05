@@ -1,5 +1,5 @@
 <h1># perago-nestjs-api</h1>
-Perago Information Systems's  NestJS API scaffold 
+Perago Information Systems's  NestJS API
 clone this repository .
 execute  'install npm ' then
 all the required dependence will be installed.
