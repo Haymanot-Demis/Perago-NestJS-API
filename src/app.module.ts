@@ -5,13 +5,15 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { EmployeesModule } from './employees/employees.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RolesModule } from './roles/roles.module';
 import { PhotosModule } from './photos/photos.module';
+import { AuthModule } from './auth/auth.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -26,6 +28,8 @@ import { PhotosModule } from './photos/photos.module';
     EmployeesModule,
     PhotosModule,
     RolesModule,
+    AuthModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

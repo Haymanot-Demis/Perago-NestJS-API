@@ -11,6 +11,7 @@ import {
   UsePipes,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 
 import { EmployeesService } from './employees.service';
@@ -25,6 +26,9 @@ import { JoiValidationPipe } from './employee-joi-validation.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { PhotosService } from '../photos/photos.service';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { Public, RoleDecorator, Roles } from '../app.constants';
+import { RoleGuard } from 'src/auth/role-based.guard';
 
 const storage = diskStorage({
   destination: './uploads/profiles',
@@ -42,23 +46,28 @@ export class EmployeesController {
     private readonly employeesService: EmployeesService = null,
     private readonly photosService: PhotosService = null,
   ) {}
+
   @Get()
+  @Public()
   findAllEmployees(): Promise<any[]> {
     return this.employeesService.findAllEmployees();
   }
 
   @Get('/some')
+  @Public()
   async find(@Query() query_string: CreateEmployeeDTO): Promise<Employee[]> {
     return this.employeesService.find(query_string);
   }
 
   @Get(':id')
+  @Public()
   async findEmployee(@Param('id') id: string): Promise<Employee> {
     const emp = await this.employeesService.findEmployee(id);
     return emp;
   }
 
   @Post()
+  @RoleDecorator(Roles.HR)
   @UseInterceptors(
     FileInterceptor('photo', { storage, limits: { fileSize: 5120000 } }),
   )

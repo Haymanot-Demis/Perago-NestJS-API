@@ -28,10 +28,10 @@ export class CreateEmployeeDTO {
   @IsEmail()
   email: string;
 
+  password?: string = '12345678';
+
   @IsNotEmpty()
   position: string;
-
-  level: number;
 
   parentId: string;
 
@@ -43,6 +43,6 @@ export const createEmployeeJoiSchema = Joi.object({
   lastname: Joi.string().min(3).max(20).required(),
   email: Joi.string().email().required(),
   position: Joi.string().required(),
+  password: Joi.string().default('12345678'),
   // parent: Joi.string(),
-  level: Joi.number(),
 });

@@ -1,8 +1,10 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   Tree,
   TreeChildren,
@@ -10,6 +12,7 @@ import {
   TreeParent,
 } from 'typeorm';
 import { Photo } from '../../photos/entities/photo.entity';
+import { Role } from 'src/roles/entities/role.entity';
 
 @Entity()
 @Tree('closure-table', {
@@ -26,10 +29,17 @@ export class Employee {
   @Column()
   lastname: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true, default: null })
+  phone: string;
+
+  @Column({ nullable: true, default: '12345678', select: false })
+  password: string;
+
+  @OneToOne(() => Role, (role) => role.employee)
+  @JoinColumn()
   position: string;
 
   @OneToMany(() => Employee, (employee) => employee.parent)

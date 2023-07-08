@@ -8,6 +8,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = new ConfigService();
   const PORT = configService.get('PORT') || 3000;
+  console.log('PORT', configService.get('PORT'));
+
   app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
     .setTitle('Perago Information systems')
@@ -17,7 +19,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  await app.listen(3000, () => {
+  await app.listen(PORT, () => {
     console.log('Server is running at port ' + PORT);
   });
 }

@@ -24,7 +24,7 @@ export class RolesService {
   }
 
   async findAll(): Promise<Role[]> {
-    return this.roleRepository.find({ relations: ['children'] });
+    return this.roleRepository.find({ relations: ['children', 'employee'] });
   }
 
   async getHierarchy(id: string): Promise<Role> {

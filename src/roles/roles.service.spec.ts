@@ -8,7 +8,6 @@ import {
   InsertResult,
   Repository,
 } from 'typeorm';
-import exp from 'constants';
 
 describe('RolesService', () => {
   let service: RolesService;
